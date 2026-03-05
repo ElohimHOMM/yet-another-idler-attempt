@@ -1,0 +1,65 @@
+<body class="flex flex-col h-screen text-white bg-neutral-900 font-mono">
+  <!-- Main Layout -->
+  <main>
+    <div class="flex h-screen bg-neutral-900 text-white">
+      <!-- Left Sidebar -->
+      <aside class="w-56 p-4 bg-neutral-900 flex flex-col space-y-4">
+        <div class="bg-neutral-700 rounded-xl p-4 shadow-md">
+          <h3 class="font-bold">Divinity</h3>
+          <p id="points" class="text-xl mt-2">0</p>
+        </div>
+        <div class="bg-neutral-700 rounded-xl p-4 shadow-md">
+          <h3 class="font-bold">Next Currency</h3>
+          <p id="next-points" class="text-xl mt-2">0</p>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col">
+        <!-- Tabs Row -->
+        <div class="bg-neutral-900 rounded-t-xl justify-between flex space-x-2">
+          <div class="flex">
+            <button data-tab="main" class="tab-button px-4 py-2 rounded-t-lg font-semibold hover:bg-neutral-600">
+              Main
+            </button>
+            <button data-tab="shop" class="tab-button px-4 py-2 rounded-t-lg font-semibold hover:bg-neutral-600">
+              Shop
+            </button>
+            <button data-tab="next" class="tab-button px-4 py-2 rounded-t-lg font-semibold hover:bg-neutral-600">
+              Next Currency
+            </button>
+          </div>
+
+          <div class="flex">
+            <button id="info-button" class="p-2 rounded-lg hover:bg-neutral-600">
+              <img src="/assets/info-svgrepo-com.svg" class="w-6 h-6" alt="Info"/>
+            </button>
+
+            <button id="settings-button" class="p-2 rounded-lg hover:bg-neutral-600">
+              <img src="/assets/gear-svgrepo-com.svg" class="w-6 h-6" alt="Settings"/>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab Panels -->
+        <div class="tab-panels flex-1 bg-neutral-800 p-6 mt-0">
+          <div id="main" class="tab-panel">
+            <button id="manual-click" class="bg-neutral-600 px-6 py-2 rounded-xl font-semibold hover:bg-neutral-500">
+              Click for Divinity
+            </button>
+          </div>
+          <div id="shop" class="tab-panel hidden">
+            <p>Shop tab content</p>
+          </div>
+          <div id="next" class="tab-panel hidden">
+            <p>Next currency content</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="modal-root">
+
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
