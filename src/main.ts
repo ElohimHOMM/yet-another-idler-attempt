@@ -21,7 +21,7 @@ await ui.init()
 // Game Loop
 function loop() {
   const now = performance.now()
-  
+
   game.update(now)
   ui.render()
   
@@ -30,7 +30,7 @@ function loop() {
 
 loop()
 
-// Autosave every 10s
+// Autosave every 60s
 setInterval(() => {
   saveSystem.save(game.toSaveData())
-}, 10000)
+}, 60000)

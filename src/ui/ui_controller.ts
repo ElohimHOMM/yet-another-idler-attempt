@@ -5,6 +5,7 @@ import { SettingsModal } from "./modals/settings_modal"
 import { InfoModal } from "./modals/info_modal"
 import { BaseTab } from "./tabs/base_tab"
 import { MainTab } from "./tabs/main_tab"
+import { StoryTab } from "./tabs/story_tab"
 
 export class UIController {
     private game: Game
@@ -26,6 +27,8 @@ export class UIController {
     private settingsModal: SettingsModal
     private infoModal: InfoModal
 
+    private storyTabButton: HTMLElement
+
     constructor(game: Game, settings: Settings) {
         this.game = game
         this.settings = settings
@@ -38,6 +41,8 @@ export class UIController {
         this.tabPanels = document.querySelectorAll(".tab-panel")
         this.settingsModal = new SettingsModal(this.settings)
         this.infoModal = new InfoModal()
+
+        this.storyTabButton = document.querySelector('[data-tab="story"]')!
     }
 
     async init() {
@@ -45,6 +50,7 @@ export class UIController {
         await this.infoModal.init()
 
         this.tabs["main"] = new MainTab(this.game)
+        this.tabs["story"] = new StoryTab(this.game)
 
         Object.values(this.tabs).forEach(tab => tab.init())
 
@@ -52,6 +58,8 @@ export class UIController {
         this.initializeTabs()
         
         this.activeTab = this.tabs["main"]
+
+        this.game.story.unlock("intro")
     }
 
     private initializeTabs() {
@@ -65,6 +73,9 @@ export class UIController {
 
                 // Hide previous tab
                 this.activeTab?.onHide()
+
+                // Mark story as read if in story
+                if (id === "story") this.game.story.markAllRead()
 
                 // Show new tab
                 const panel = document.getElementById(id)
@@ -100,7 +111,7 @@ export class UIController {
 
     private updateCurrencies() {
         this.divinityElement.textContent =
-            this.formatter.format(this.game.points, this.settings.getNotation())
+            this.formatter.format(this.game.divinity, this.settings.getNotation())
 
         this.nextPointsElement.textContent =
             this.formatter.format(0, this.settings.getNotation())
@@ -110,6 +121,12 @@ export class UIController {
         const now = performance.now()
 
         this.activeTab?.render(now)
+
+        if (this.game.story.hasUnreadEntries()) {
+            this.storyTabButton.classList.add("tab-flash")
+        } else {
+            this.storyTabButton.classList.remove("tab-flash")
+        }
 
         if (this.game.isDirty()) {
             this.updateCurrencies()

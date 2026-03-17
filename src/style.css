@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@keyframes tabFlash {
+  0%, 100% { background-color: #2e2e2e; }
+  50% { background-color: #b4b4b4; }
+}
+
+.tab-flash {
+  animation: tabFlash 3s infinite;
+}

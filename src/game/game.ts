@@ -1,4 +1,5 @@
 import { ActionManager } from "./action_manager"
+import { StoryManager } from "../ui/story/story_manager"
 
 export interface SaveGameData {
   version: number
@@ -9,6 +10,7 @@ export class Game {
   public divinity: number = 0
   private dirty = true
   actionManager = new ActionManager()
+  story = new StoryManager()
 
   update(now: number) {
     this.actionManager.update(now)
