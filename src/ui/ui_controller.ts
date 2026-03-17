@@ -1,14 +1,20 @@
 import { Game } from "../game/game"
 import { Settings } from "../game/settings"
 import { NumberFormatter } from "../utils/number_formatter"
-import { ModalManager } from "./modal_manager"
+import { SettingsModal } from "./modals/settings_modal"
+import { InfoModal } from "./modals/info_modal"
+import { BaseTab } from "./tabs/base_tab"
+import { MainTab } from "./tabs/main_tab"
 
 export class UIController {
     private game: Game
     private settings: Settings
 
+    private tabs: Record<string, BaseTab> = {}
+    private activeTab: BaseTab | null = null
     private divinityElement: HTMLElement
-    private manualClickButton: HTMLElement
+    private nextPointsElement: HTMLElement
+
     private infoButton: HTMLElement
     private settingsButton: HTMLElement
 
@@ -16,44 +22,65 @@ export class UIController {
     private tabPanels: NodeListOf<HTMLElement>
 
     private formatter = new NumberFormatter()
-    private modals = new ModalManager()
+
+    private settingsModal: SettingsModal
+    private infoModal: InfoModal
 
     constructor(game: Game, settings: Settings) {
         this.game = game
         this.settings = settings
 
         this.divinityElement = document.getElementById("points")!
-        this.manualClickButton = document.getElementById("manual-click")!
+        this.nextPointsElement = document.getElementById("next-points")!
         this.infoButton = document.getElementById("info-button")!
         this.settingsButton = document.getElementById("settings-button")!
         this.tabButtons = document.querySelectorAll(".tab-button")
         this.tabPanels = document.querySelectorAll(".tab-panel")
+        this.settingsModal = new SettingsModal(this.settings)
+        this.infoModal = new InfoModal()
     }
 
     async init() {
-        this.modals.registerModal("settings-modal")
-        this.modals.registerModal("info-modal")
+        await this.settingsModal.init()
+        await this.infoModal.init()
+
+        this.tabs["main"] = new MainTab(this.game)
+
+        Object.values(this.tabs).forEach(tab => tab.init())
 
         this.bindEvents()
         this.initializeTabs()
+        
+        this.activeTab = this.tabs["main"]
     }
 
     private initializeTabs() {
         this.tabButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-            const target = btn.dataset.tab
-            if (!target) return
+            btn.addEventListener("click", () => {
+                const id = btn.dataset.tab
+                if (!id) return
 
-            // Hide all panels
-            this.tabPanels.forEach(panel => panel.classList.add("hidden"))
-            // Show target panel
-            const activePanel = document.getElementById(target)
-            activePanel?.classList.remove("hidden")
+                // Hide all panels
+                this.tabPanels.forEach(p => p.classList.add("hidden"))
 
-            // Optionally update button styles
-            this.tabButtons.forEach(b => b.classList.remove("bg-neutral-600", "text-white"))
-            btn.classList.add("bg-neutral-600", "text-white")
-        })
+                // Hide previous tab
+                this.activeTab?.onHide()
+
+                // Show new tab
+                const panel = document.getElementById(id)
+                panel?.classList.remove("hidden")
+
+                const newTab = this.tabs[id]
+                this.activeTab = newTab
+
+                newTab?.onShow()
+
+                // Update button styles
+                this.tabButtons.forEach(b =>
+                    b.classList.remove("bg-neutral-600", "text-white")
+                )
+                btn.classList.add("bg-neutral-600", "text-white")
+            })
         })
 
         // Activate first tab by default
@@ -62,36 +89,31 @@ export class UIController {
     }
 
     private bindEvents() {
-        this.manualClickButton.addEventListener("click", () => {
-            this.game.addPoints(1)
+        this.settingsButton.addEventListener("click", () => {
+            this.settingsModal.open()
         })
 
         this.infoButton.addEventListener("click", () => {
-            this.modals.open("info-modal")
-        })
-
-        this.settingsButton.addEventListener("click", () => {
-            this.modals.open("settings-modal")
-
-            const select = document.getElementById("notation-select") as HTMLSelectElement
-            select.value = this.settings.getNotation()
-
-            select.addEventListener("change", () => {
-                this.settings.setNotation(select.value as any)
-            })
+            this.infoModal.open()
         })
     }
 
+    private updateCurrencies() {
+        this.divinityElement.textContent =
+            this.formatter.format(this.game.points, this.settings.getNotation())
+
+        this.nextPointsElement.textContent =
+            this.formatter.format(0, this.settings.getNotation())
+    }
+
     render() {
-        // Update sidebar currencies
-        this.divinityElement.textContent = this.formatter.format(this.game.points, this.settings.getNotation())
+        const now = performance.now()
 
-        // Other currencies if any:
-        const nextPointsEl = document.getElementById("next-points")
-        if (nextPointsEl) {
-            nextPointsEl.textContent = "0"
+        this.activeTab?.render(now)
+
+        if (this.game.isDirty()) {
+            this.updateCurrencies()
+            this.game.clearDirty()
         }
-
-        // Optional: render active tab content (if dynamic)
     }
 }

@@ -25,6 +25,9 @@
             <button data-tab="shop" class="tab-button px-4 py-2 rounded-t-lg font-semibold hover:bg-neutral-600">
               Shop
             </button>
+            <button data-tab="story" class="tab-button px-4 py-2 rounded-t-lg font-semibold hover:bg-neutral-600">
+              Story
+            </button>
             <button data-tab="next" class="tab-button px-4 py-2 rounded-t-lg font-semibold hover:bg-neutral-600">
               Next Currency
             </button>
@@ -44,13 +47,21 @@
         <!-- Tab Panels -->
         <div class="tab-panels flex-1 bg-neutral-800 p-6 mt-0">
           <div id="main" class="tab-panel">
-            <button id="manual-click" class="bg-neutral-600 px-6 py-2 rounded-xl font-semibold hover:bg-neutral-500">
-              Click for Divinity
+            <button id="manual-click" class="bg-neutral-600 px-6 py-2 rounded-xl font-semibold hover:bg-neutral-500 relative overflow-hidden">
+              <span class="relative z-10">Gain Divinity</span>
+
+              <div class="progress-bar absolute left-0 top-0 h-full w-0 bg-indigo-400 opacity-50"></div>
             </button>
           </div>
+
+          <div id="story" class="tab-panel hidden">
+            <p>Story Tab Content</p>
+          </div>
+
           <div id="shop" class="tab-panel hidden">
             <p>Shop tab content</p>
           </div>
+
           <div id="next" class="tab-panel hidden">
             <p>Next currency content</p>
           </div>

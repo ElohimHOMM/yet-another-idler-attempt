@@ -20,10 +20,11 @@ await ui.init()
 
 // Game Loop
 function loop() {
-  game.update()
-  if (game.consumeDirty()) {
-    ui.render()
-  }
+  const now = performance.now()
+  
+  game.update(now)
+  ui.render()
+  
   requestAnimationFrame(loop)
 }
 

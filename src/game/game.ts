@@ -1,25 +1,27 @@
+import { ActionManager } from "./action_manager"
+
 export interface SaveGameData {
   version: number
-  points: number
+  divinity: number
 }
 
 export class Game {
-  public points: number = 0
-
+  public divinity: number = 0
   private dirty = true
+  actionManager = new ActionManager()
 
-  update() {
-    // still empty
+  update(now: number) {
+    this.actionManager.update(now)
   }
 
   addPoints(amount: number) {
-    this.points += amount
+    this.divinity += amount
     this.markDirty()
   }
 
   // Points util
   getPoints(): number {
-    return this.points
+    return this.divinity
   }
 
   // Dirty Util
@@ -27,8 +29,16 @@ export class Game {
     this.dirty = true
   }
 
+  clearDirty() {
+    this.dirty = false
+  }
+
+  isDirty() {
+    return this.dirty
+  }
+
   consumeDirty(): boolean {
-    if (this.dirty) {
+    if (this.isDirty()) {
       this.dirty = false
       return true
     }
@@ -37,13 +47,13 @@ export class Game {
 
   // Save Data Management
   load(data: SaveGameData) {
-    this.points = data.points
+    this.divinity = data.divinity
   }
 
   toSaveData(): SaveGameData {
     return {
       version: 1,
-      points: this.points,
+      divinity: this.divinity,
     }
   }
 }
