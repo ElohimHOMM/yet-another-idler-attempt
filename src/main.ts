@@ -4,8 +4,10 @@ import { Game } from "./game/game"
 import { SaveSystem } from "./game/save_system"
 import { Settings } from "./game/settings"
 import { UIController } from "./ui/ui_controller"
+import { loadStoryData } from "./game/story_manager"
 
-const game = new Game()
+const storyData = await loadStoryData()
+const game = new Game(storyData)
 const saveSystem = new SaveSystem()
 const settings = new Settings()
 
@@ -30,7 +32,7 @@ function loop() {
 
 loop()
 
-// Autosave every 60s
+// Autosave every 10s
 setInterval(() => {
   saveSystem.save(game.toSaveData())
-}, 60000)
+}, 10000)

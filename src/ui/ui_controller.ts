@@ -58,8 +58,6 @@ export class UIController {
         this.initializeTabs()
         
         this.activeTab = this.tabs["main"]
-
-        this.game.story.unlock("intro")
     }
 
     private initializeTabs() {
@@ -73,9 +71,6 @@ export class UIController {
 
                 // Hide previous tab
                 this.activeTab?.onHide()
-
-                // Mark story as read if in story
-                if (id === "story") this.game.story.markAllRead()
 
                 // Show new tab
                 const panel = document.getElementById(id)

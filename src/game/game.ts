@@ -1,27 +1,41 @@
 import { ActionManager } from "./action_manager"
-import { StoryManager } from "../ui/story/story_manager"
+import { StoryManager, type StoryEntry } from "./story_manager"
+import { EventBus } from "./event_bus"
 
 export interface SaveGameData {
   version: number
   divinity: number
+  story: object
 }
 
 export class Game {
   public divinity: number = 0
   private dirty = true
   actionManager = new ActionManager()
-  story = new StoryManager()
+  story!: StoryManager
+  public events = new EventBus()
+  
+  constructor(storyData: StoryEntry[]) {
+    this.story = new StoryManager(storyData, this)
+    this.story.checkUnlocks(this)
+  }
 
+  // update and add
   update(now: number) {
     this.actionManager.update(now)
   }
 
+  // Points util
   addPoints(amount: number) {
     this.divinity += amount
     this.markDirty()
+
+    this.events.emit("pointsGained", {
+      amount,
+      total: this.divinity
+    })
   }
 
-  // Points util
   getPoints(): number {
     return this.divinity
   }
@@ -49,13 +63,17 @@ export class Game {
 
   // Save Data Management
   load(data: SaveGameData) {
+    if (!data) return
+
     this.divinity = data.divinity
+    this.story.deserialize(data.story)
   }
 
   toSaveData(): SaveGameData {
     return {
       version: 1,
       divinity: this.divinity,
+      story: this.story.serialize()
     }
   }
 }

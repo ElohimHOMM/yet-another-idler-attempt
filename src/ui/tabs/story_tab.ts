@@ -1,6 +1,5 @@
 import { BaseTab } from "./base_tab"
 import { Game } from "../../game/game"
-import { UIComponent } from "../elements/ui_component"
 
 export class StoryTab extends BaseTab {
   private listEl: HTMLElement
@@ -25,7 +24,6 @@ export class StoryTab extends BaseTab {
   }
 
   onShow() {
-    this.game.story.markAllRead()
     this.renderList()
   }
 
@@ -38,18 +36,40 @@ export class StoryTab extends BaseTab {
 
     this.listEl.innerHTML = ""
 
-    entries.forEach(entry => {
+    // ensure that the latest unlocks are at the top
+    entries.sort((a, b) => b.id.localeCompare(a.id)).forEach(entry => {
       const el = document.createElement("div")
 
-      el.className =
-        "p-3 mb-2 rounded-lg cursor-pointer bg-neutral-600 hover:bg-neutral-500"
+      el.className = `
+        p-3 mb-2 rounded-lg cursor-pointer
+        transition-all duration-150
+        bg-neutral-600 hover:bg-neutral-500
+        flex justify-between items-center
+      `
+      const title = document.createElement("span")
+      title.textContent = entry.title
+      el.appendChild(title)
 
-      // Highlight unread
+      // 🟣 UNREAD INDICATOR
       if (!entry.read) {
-        el.classList.add("border-l-4", "border-indigo-400")
+        el.classList.add("border-l-4", "border-red-500", "animate-pulse")
+
+        const unreadDot = document.createElement("span")
+        unreadDot.className = "text-red-500 ml-2"
+        unreadDot.textContent = "●"
+        el.appendChild(unreadDot)
       }
 
-      el.textContent = entry.title
+      // 🟢 SELECTED STATE
+      if (entry.id === this.selectedId) {
+        el.classList.remove("bg-neutral-600", "hover:bg-neutral-500")
+        el.classList.add("border-l-4", "border-neutral-200", "bg-neutral-400")
+
+        const currentDot = document.createElement("span")
+        currentDot.className = "text-neutral-200 ml-2"
+        currentDot.textContent = "●"
+        el.appendChild(currentDot)
+      }
 
       el.addEventListener("click", () => {
         this.selectEntry(entry.id)
@@ -68,9 +88,8 @@ export class StoryTab extends BaseTab {
     this.titleEl.textContent = entry.title
     this.textEl.textContent = entry.content
 
-    entry.read = true
+    this.game.story.markAsRead(id)
 
-    // Update list to remove highlight
     this.renderList()
   }
 }

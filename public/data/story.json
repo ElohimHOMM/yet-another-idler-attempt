@@ -1,0 +1,38 @@
+[
+    {
+        "id": "00001",
+        "title": "Apotheosis", 
+        "content": "The ascent to godhood didn't pass without problems. You're weak, maybe more human than you were on your journey to become a god. The ascension was a success, but at great cost to your body and mind. You should start gathering divinity and make this new world your own.",
+        "unlock": {
+            "type": "divinity",
+            "value": 0
+        }
+    },
+    {
+        "id": "00002",
+        "title": "Divinity",
+        "content": "Divinity is your basic resource, it's the cumulation of your divine power, your strength as a god so to speak. You will use it for upgrades and more. Speaking of, check the new \"Shop\"-tab.",
+        "unlock": {
+            "type": "divinity",
+            "value": 5
+        }
+    },
+    {
+        "id": "10000",
+        "title": "Debug", 
+        "content": "Debug Message 1.",
+        "unlock": {
+            "type": "divinity",
+            "value": 0
+        }
+    },
+    {
+        "id": "11000",
+        "title": "Debug 2", 
+        "content": "Debug Message 2.",
+        "unlock": {
+            "type": "divinity",
+            "value": 0
+        }
+    }
+]

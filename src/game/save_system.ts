@@ -32,7 +32,8 @@ export class SaveSystem {
   createEmpty(): SaveGameData {
     return {
       version: CURRENT_VERSION,
-      points: 0,
+      divinity: 0,
+      story: {}
     }
   }
 }
