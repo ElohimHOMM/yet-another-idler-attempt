@@ -1,4 +1,5 @@
-import type { Game } from "./game";
+import { GameEvents } from "../events/event_bus";
+import type { Game } from "../game";
 
 type UnlockCondition = 
   | { type: "divinity"; value: number }
@@ -17,6 +18,7 @@ export type StoryEntry = {
 export class StoryManager {
   private entries: Record<string, StoryEntry> = {}
   private hasUnread = false
+  private game: Game
 
   constructor(entries: StoryEntry[], game: Game) {
     entries.forEach(e => {
@@ -27,7 +29,8 @@ export class StoryManager {
       }
     })
 
-    game.events.on("pointsGained", ({ total }) => {
+    this.game = game
+    game.events.on(GameEvents.POINTS_GAINED, ({ total }) => {
       this.checkDivinityUnlocks(total)
     })
   }
@@ -40,18 +43,8 @@ export class StoryManager {
     entry.unlocked = true
     entry.read = false
     this.hasUnread = true
-  }
 
-  checkUnlocks(game: Game) {
-    Object.values(this.entries).forEach(entry => {
-      if (entry.unlocked || !entry.unlock) return
-
-      if (entry.unlock.type === "divinity") {
-        if (game.divinity >= entry.unlock.value) {
-          this.unlock(entry.id)
-        }
-      }
-    })
+    this.game.events.emit(GameEvents.STORY_UNLOCKED, { id })
   }
 
   private checkDivinityUnlocks(divinity: number) {

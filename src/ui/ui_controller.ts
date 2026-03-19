@@ -5,6 +5,7 @@ import { SettingsModal } from "./modals/settings_modal"
 import { InfoModal } from "./modals/info_modal"
 import { BaseTab } from "./tabs/base_tab"
 import { MainTab } from "./tabs/main_tab"
+import { ShopTab } from "./tabs/shop_tab"
 import { StoryTab } from "./tabs/story_tab"
 
 export class UIController {
@@ -50,6 +51,7 @@ export class UIController {
         await this.infoModal.init()
 
         this.tabs["main"] = new MainTab(this.game)
+        this.tabs["shop"] = new ShopTab(this.game)
         this.tabs["story"] = new StoryTab(this.game)
 
         Object.values(this.tabs).forEach(tab => tab.init())

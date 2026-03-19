@@ -1,9 +1,9 @@
-import type { SaveGameData } from "./game"
+import type { SaveGameData } from "../game"
 
 const STORAGE_KEY = "yaia-save"
 const CURRENT_VERSION = 1
 
-export class SaveSystem {
+export class SaveManager {
 
   save(data: SaveGameData) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data))

@@ -1,5 +1,5 @@
 import { UIComponent } from "./ui_component"
-import { Action } from "../../game/action"
+import { Action } from "../../game/actions/action"
 import type { Game } from "../../game/game"
 
 export class ActionButton extends UIComponent {

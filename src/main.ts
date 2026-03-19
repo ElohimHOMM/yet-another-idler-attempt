@@ -1,14 +1,14 @@
 import "./style.css"
 
 import { Game } from "./game/game"
-import { SaveSystem } from "./game/save_system"
+import { SaveManager } from "./game/managers/save_manager"
 import { Settings } from "./game/settings"
 import { UIController } from "./ui/ui_controller"
-import { loadStoryData } from "./game/story_manager"
+import { loadStoryData } from "./game/managers/story_manager"
 
 const storyData = await loadStoryData()
 const game = new Game(storyData)
-const saveSystem = new SaveSystem()
+const saveSystem = new SaveManager()
 const settings = new Settings()
 
 // Load save

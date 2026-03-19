@@ -1,5 +1,5 @@
 import { BaseTab } from "./base_tab"
-import { Action } from "../../game/action"
+import { Action } from "../../game/actions/action"
 import { Game } from "../../game/game"
 import { ActionButton } from "../elements/action_button"
 import type { UIComponent } from "../elements/ui_component"
