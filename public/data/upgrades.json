@@ -1,0 +1,11 @@
+[
+  {
+    "id": "faster_action",
+    "name": "Faster Gathering",
+    "description": "Reduce action time from 5s to 4s",
+    "cost": 5,
+    "type": "action_duration",
+    "value": 4000,
+    "amount": 1
+  }
+]

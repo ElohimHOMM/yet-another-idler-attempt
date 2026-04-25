@@ -108,10 +108,8 @@ export class UIController {
 
     private updateCurrencies() {
         this.divinityElement.textContent =
-            this.formatter.format(this.game.divinity, this.settings.getNotation())
-
-        this.nextPointsElement.textContent =
-            this.formatter.format(0, this.settings.getNotation())
+            this.formatter.format(this.game.currencies.get("divinity")!.amount, this.settings.getNotation()) + " / " + 
+            this.formatter.format(this.game.currencies.get("divinity")!.max, this.settings.getNotation())
     }
 
     render() {

@@ -1,6 +1,7 @@
 import { ActionManager } from "./managers/action_manager"
 import { StoryManager, type StoryEntry } from "./managers/story_manager"
 import { EventBus, GameEvents, type GameEventMap } from "./events/event_bus"
+import { CurrencyManager } from "./managers/currency_manager"
 
 export interface SaveGameData {
   version: number
@@ -10,30 +11,15 @@ export interface SaveGameData {
 
 
 export class Game {
-  public divinity: number = 0
   private dirty = true
   actionManager = new ActionManager()
+  currencies = new CurrencyManager()
   story!: StoryManager
   public events = new EventBus<GameEventMap>()
   
   constructor(storyData: StoryEntry[]) {
     this.story = new StoryManager(storyData, this)
-    this.events.emit(GameEvents.POINTS_GAINED, { amount: 0, total: this.divinity })
-  }
-
-  // temp stuff
-  actionDuration = 5000 // ms (default 5s)
-
-  buyFasterAction() {
-    const cost = 5
-
-    if (this.divinity < cost) return false
-
-    this.divinity -= cost
-    this.actionDuration -= 1000 // -1 second
-
-    this.markDirty()
-    return true
+    this.events.emit(GameEvents.POINTS_GAINED, { amount: 0, total: this.currencies.get("divinity")!.amount })
   }
 
   // update and add
@@ -41,20 +27,18 @@ export class Game {
     this.actionManager.update(now)
   }
 
-  // Points util
-  addPoints(amount: number) {
-    this.divinity += amount
+  // Divinity util
+  addDivinity(amount: number) {
+    const gained = this.currencies.add("divinity", amount)
 
-    this.events.emit(GameEvents.POINTS_GAINED, {
-      amount,
-      total: this.divinity
-    })
+    if (gained > 0) {
+      this.events.emit(GameEvents.POINTS_GAINED, {
+        amount: gained,
+        total: this.currencies.get("divinity")!.amount
+      })
+    }
     
     this.markDirty()
-  }
-
-  getPoints(): number {
-    return this.divinity
   }
 
   // Dirty Util

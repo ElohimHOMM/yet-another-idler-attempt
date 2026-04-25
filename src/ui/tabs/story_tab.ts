@@ -63,7 +63,7 @@ export class StoryTab extends BaseTab {
       // 🟢 SELECTED STATE
       if (entry.id === this.selectedId) {
         el.classList.remove("bg-neutral-600", "hover:bg-neutral-500")
-        el.classList.add("border-l-4", "border-neutral-200", "bg-neutral-400")
+        el.classList.add("border-l-4", "border-neutral-200", "bg-neutral-950")
 
         const currentDot = document.createElement("span")
         currentDot.className = "text-neutral-200 ml-2"
